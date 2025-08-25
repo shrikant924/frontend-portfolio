@@ -1,0 +1,19 @@
+.nav-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-basis: 90em;
+}
+
+#brand {
+    display: inline-block;
+    white-space: normal;
+    word-break: break-word;
+    max-width: 150px;
+    font-style: revert-layer;
+    border: 5px solid #75c7c8;
+    border-radius: 1em;
+    background-color: deeppink;
+    font-weight: 600;
+    font-size: small;
+}

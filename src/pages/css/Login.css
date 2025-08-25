@@ -1,0 +1,98 @@
+.form-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  border: 1px solid black;
+  margin-top: 5rem;
+  padding: 2em;
+  /* max-width: fit-content; */
+  border-radius: 1rem;
+  background-color: white;
+
+}
+
+
+.form-items {
+
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+  justify-content: center;
+  padding: 1em 2em;
+}
+
+div>input {
+  width: 20em;
+}
+
+div>label {
+  font-weight: 400;
+  width: 8em;
+  text-align: left;
+}
+
+.cross-button {
+  display: flex;
+  width: 100%;
+  justify-content: flex-end;
+  align-content: flex-end;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  /* semi-transparent black */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+/* .form-container {
+  background-color: white;
+  padding: 2rem;
+  border-radius: 10px;
+  width: 400px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+.cross-button {
+  display: flex;
+  justify-content: flex-end;
+} */
+
+.error-msg {
+  font-family: ui-serif;
+  text-transform: capitalize;
+  color: red;
+  font-size: medium;
+}
+
+.card {
+  border: 0.1em solid red;
+  width: fit-content;
+  padding: 0.5em;
+  display: flex;
+  align-items: center;
+  text-align: left;
+  justify-content: center;
+  background-color: bisque;
+  flex-grow: 2;
+
+}
+
+.card-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1em;
+  margin: 2em 5em;
+}
+
+ul {
+  padding-left: unset;
+}
