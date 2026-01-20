@@ -1,4 +1,4 @@
-import { useState, type HTMLInputTypeAttribute, type ReactHTMLElement } from 'react'
+import { useState } from 'react'
 import '../pages/css/Login.css'
 import axios from 'axios';
 
@@ -25,11 +25,11 @@ const Login = () => {
         }));
     };
 
-    const doLogin = async() => {
+    const doLogin = async () => {
         try {
             const res = await axios.post("http://localhost:8080/api/login", inputData);
             alert(res.data);
-        } catch (error) {
+        } catch (error: any) {
             alert(error.response?.data || "Login failed")
         }
 
