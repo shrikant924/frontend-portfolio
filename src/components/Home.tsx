@@ -1,17 +1,42 @@
 import axios from "axios";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import './css/Home.css';
+import { ProductCard } from "./ProductCard";
 
 const Home = () => {
+    type Product = {
+        id: number,
+        brand: string,
+        category: string,
+        description: string,
+        discount: number,
+        image: string,
+        name: string,
+        originalPrice: number,
+        price: number,
+        rating: number,
+        reviews: number,
+        stock: number
+    }
 
+    const [products, setProducts] = useState<Product[]>([]);
     useEffect(() => {
         const showData = async () => {
-            console.log(await axios.get("http://localhost:8080/product/getProducts"))
+            const res = await axios.get("http://localhost:8080/product/getProducts")
+            setProducts(res.data)
         }
         showData()
-    }, [] )
+
+    }, [])
+
     return (
         <>
-            <h1></h1>
+            <div className="main-container">
+                {products.map(product => (
+                    <ProductCard product={product} />
+                ))
+                } 
+            </div>
         </>
     )
 }

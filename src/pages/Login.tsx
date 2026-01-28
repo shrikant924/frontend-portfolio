@@ -28,7 +28,7 @@ const Login = () => {
 
     const doLogin = async () => {
         try {
-            const res = await axios.post("http://localhost:8080/api/login", inputData);
+            const res = await axios.post("http://localhost:8080/api/login", inputData, { withCredentials: true });
             alert(res.data);
         } catch (error: any) {
             alert(error.response?.data || "Login failed")
