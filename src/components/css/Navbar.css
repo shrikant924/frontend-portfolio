@@ -1,0 +1,25 @@
+body {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    background-color: aqua !important;
+}
+
+.nav-container {
+    width: 100vw;
+    background: transparent;
+    font-size: 25px;
+    font-family: monospace;
+    font-weight: bold;
+}
+
+.nav-container li a:hover {
+    color: white !important;
+    background-color: rebeccapurple;
+    border-radius: 10px;
+}
+
+.nav-container ul {
+    display: flex;
+    gap: 1em;
+}

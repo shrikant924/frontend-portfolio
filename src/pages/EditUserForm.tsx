@@ -1,5 +1,4 @@
 import '../pages/css/RegistrationFrom.css'
-import 'bootstrap/dist/css/bootstrap.min.css'
 import { useState, useEffect } from "react";
 import axios from "axios";
 
@@ -7,6 +6,7 @@ const EditUserFrom = () => {
     const id: number = 2;
 
     const [formData, setFormData] = useState({
+        id: "",
         fullName: "",
         email: "",
         username: "",
@@ -20,6 +20,7 @@ const EditUserFrom = () => {
                 const res = await axios.get(`http://localhost:8080/api/get/${id}`);
                 console.log(res.data);
                 setFormData({
+                    id: res.data.id,
                     fullName: res.data.fullName ?? "",
                     email: res.data.email ?? "",
                     username: res.data.username ?? "",
@@ -51,7 +52,7 @@ const EditUserFrom = () => {
 
         try {
             const response = await axios.put(
-                "http://localhost:8080/api/register",
+                "http://localhost:8080/api/update",
                 formData
             );
 
@@ -66,6 +67,7 @@ const EditUserFrom = () => {
 
     const handleReset = () => {
         setFormData({
+            id: "",
             fullName: "",
             email: "",
             username: "",

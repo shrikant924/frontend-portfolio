@@ -1,14 +1,12 @@
-import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
-import RegistrationFrom from './pages/RegistrationForm'
-import EditUserDetailsFrom from './pages/EditUserForm'
+import { BrowserRouter } from 'react-router-dom'
+import App from './App'
+import 'bootstrap/dist/css/bootstrap.min.css'
+
 
 createRoot(document.getElementById('root')!).render(
-  <StrictMode>
-    {/* <ShowStudent/> */}
-    <EditUserDetailsFrom />
-    {/* <RegistrationFrom /> */}
-    {/* <Login /> */}
-  </StrictMode>,
+  <BrowserRouter>
+    <App />
+  </BrowserRouter>
 )

@@ -1,8 +1,7 @@
-import '../pages/css/RegistrationFrom.css'
-import 'bootstrap/dist/css/bootstrap.min.css'
 import { useState } from "react";
 import axios from "axios";
-
+import './css/RegistrationFrom.css'
+import { Link } from "react-router-dom";
 const RegistrationFrom = () => {
 
     const [formData, setFormData] = useState({
@@ -55,70 +54,51 @@ const RegistrationFrom = () => {
     };
 
     return (
-        <div className="card">
-            <div className="gradient-bar"></div>
+        <>
+            <div className="login-page">
+                <div className="wrapper">
+                    <form action="">
+                        <h2>Sign Up</h2>
 
-            <form className="form" onSubmit={handleSubmit}>
-                <h2>Sign Up</h2>
+                        <div className="input-group">
+                            <input type="text" onChange={handleChange} name='fullName' value={formData.fullName} required />
+                            <label htmlFor="">Name</label>
+                        </div>
 
-                <label>Full Name</label>
-                <input
-                    type="text"
-                    name="fullName"
-                    value={formData.fullName}
-                    onChange={handleChange}
-                    placeholder="Name"
-                />
+                        <div className="input-group">
+                            <input type="text" onChange={handleChange} name='email' value={formData.email} required />
+                            <label htmlFor="">Email</label>
+                        </div>
 
-                <label>Email</label>
-                <input
-                    type="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    placeholder="Email"
-                />
+                        <div className="input-group">
+                            <input type="text" onChange={handleChange} name='username' value={formData.username} required />
+                            <label htmlFor="">Username</label>
+                        </div>
 
-                <label>Username</label>
-                <input
-                    type="text"
-                    name="username"
-                    value={formData.username}
-                    onChange={handleChange}
-                    placeholder="User"
-                />
+                        <div className="input-group">
+                            <input type="password" onChange={handleChange} name='password' value={formData.password} required />
+                            <label htmlFor="">Password</label>
+                        </div>
 
-                <label>Password</label>
-                <input
-                    type="password"
-                    name="password"
-                    value={formData.password}
-                    onChange={handleChange}
-                    placeholder="******"
-                />
+                        <div className="input-group">
+                            <input type="password" onChange={handleChange} name='confirmPassword' value={formData.confirmPassword} required />
+                            <label htmlFor="">Confirm Password</label>
+                        </div>
 
-                <label>Repeat Password</label>
-                <input
-                    type="password"
-                    name="confirmPassword"
-                    value={formData.confirmPassword}
-                    onChange={handleChange}
-                    placeholder="******"
-                />
+                        <div className="btns">
+                            <button className="btn btn-success" type="submit" onClick={handleSubmit}>Register</button>
 
-                <div className="btn-div">
-                    <button type="submit" className="btn btn-success">Submit</button>
-                    <button
-                        type="button"
-                        className="btn btn-info"
-                        onClick={handleReset}
-                    >
-                        Reset
-                    </button>
+                            <button className={"btn btn-info"} type="reset" onClick={handleReset}>Reset</button>
+
+                        </div>
+                        <div className="signUp-link">
+                            <p>Don't have an acoount? <Link to={'/login'} className='signUpBtn-link'>Log in </Link> </p>
+                        </div>
+
+                    </form>
                 </div>
-
-            </form>
-        </div>
+            </div>
+        </>
     );
 };
 
