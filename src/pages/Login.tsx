@@ -26,12 +26,15 @@ const Login = () => {
         }));
     };
 
-    const doLogin = async () => {
+    const doLogin = async (e:React.FormEvent) => {
+        e.preventDefault();
         try {
             const res = await axios.post("http://localhost:8080/api/login", inputData, { withCredentials: true });
-            alert(res.data);
+            // alert(res.data);
+            console.log(res.data);
         } catch (error: any) {
-            alert(error.response?.data || "Login failed")
+            // alert(error.response?.data || "Login failed")
+            console.log(error);
         }
 
     }
@@ -43,7 +46,7 @@ const Login = () => {
             <div className='login-page'>
                 <div className="wrapper">
                     <div className="from-wrapper sign-in">
-                        <form action="">
+                        <form onSubmit={doLogin}>
                             <h2>Login</h2>
                             <div className="input-group">
                                 <input type="text" onInput={handleChange} name='email' value={inputData.email} required />
@@ -61,7 +64,7 @@ const Login = () => {
                                 </label>
                             </div>
 
-                            <button type="submit" onClick={doLogin}>Log in</button>
+                            <button type="submit">Log in</button>
 
                             <div className="signUp-link">
                                 <p>Don't have an acoount? <Link to={'/register'} className='signUpBtn-link'>Sign Up</Link> </p>
@@ -71,49 +74,6 @@ const Login = () => {
                     </div>
                 </div>
             </div>
-            {/* <div className='login-container'>
-                <div className='login-form'>
-
-                    <div className="mb-3 input-field">
-                        <label htmlFor="email" className="form-label">Email</label>
-                        <input
-                            type="email"
-                            className="form-control"
-                            name="email"
-                            value={inputData.email}
-                            onInput={handleChange}
-                            id="email"
-                            aria-describedby="emailHelpId"
-                            placeholder="abc@mail.com"
-                        />
-                    </div>
-
-                    <div className="mb-3 input-field">
-                        <label htmlFor="password" className="form-label">Password</label>
-                        <input
-                            type="password"
-                            className="form-control"
-                            name="password"
-                            onInput={handleChange}
-                            value={inputData.password}
-                            id="password"
-                            placeholder=""
-                        />
-                    </div>
-
-                    <div>
-                        <input
-                            name=""
-                            id=""
-                            className="btn btn-success"
-                            onClick={doLogin}
-                            type="button"
-                            value="Login"
-                        />
-                    </div>
-
-                </div>
-            </div> */}
         </>
     )
 }
