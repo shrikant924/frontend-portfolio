@@ -22,7 +22,14 @@ const Home = () => {
     const [products, setProducts] = useState<Product[]>([]);
     useEffect(() => {
         const showData = async () => {
-            const res = await axios.get("http://localhost:8080/product/getProducts")
+            const res = await axios.get("http://localhost:8080/product/getProducts"
+            ,
+            {
+                headers:{
+                    Authorization: `Bearer ${sessionStorage.getItem("token")}`
+                }
+            }
+            )
             setProducts(res.data)
         }
         showData()

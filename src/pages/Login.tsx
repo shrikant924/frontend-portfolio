@@ -1,18 +1,20 @@
 import { useState } from 'react';
 import './css/Login.css';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
 interface LoginForm {
-    email: string,
+    username: string,
     password: string
 }
 
 const Login = () => {
-
+    const { login } = useAuth()
+    const navigate = useNavigate();
     const [inputData, setInputData] = useState<LoginForm>(
         {
-            email: "",
+            username: "",
             password: ""
         }
     );
@@ -26,15 +28,17 @@ const Login = () => {
         }));
     };
 
-    const doLogin = async (e:React.FormEvent) => {
+    const doLogin = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
             const res = await axios.post("http://localhost:8080/api/login", inputData, { withCredentials: true });
-            // alert(res.data);
-            console.log(res.data);
+            login(res?.data.token);
+            alert("Logged in successfully");
+            navigate("/");
+
+
         } catch (error: any) {
-            // alert(error.response?.data || "Login failed")
-            console.log(error);
+            alert(error.response?.data || "Login failed")
         }
 
     }
@@ -49,7 +53,7 @@ const Login = () => {
                         <form onSubmit={doLogin}>
                             <h2>Login</h2>
                             <div className="input-group">
-                                <input type="text" onInput={handleChange} name='email' value={inputData.email} required />
+                                <input type="text" onInput={handleChange} name='username' value={inputData.username} required />
                                 <label htmlFor="">Username</label>
                             </div>
 

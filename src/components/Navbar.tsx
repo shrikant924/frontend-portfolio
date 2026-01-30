@@ -1,8 +1,12 @@
 import { Link } from 'react-router-dom';
 import './css/Navbar.css'
 import Home from './Home';
+import { useAuth } from '../context/AuthContext';
 
-const Navbar = () => {
+const Navbar: React.FC = () => {
+
+    const { isLoggedIn, logout } = useAuth();
+
     return (
         <>
             <nav className="nav-container navbar navbar-expand-lg navbar-light ">
@@ -22,12 +26,29 @@ const Navbar = () => {
                             <li className="nav-item">
                                 <a className="nav-link" href="#">Cart</a>
                             </li>
+
+                                <li className="nav-item">
+                                <Link className="nav-link" to={"/addProduct"}>Add Product</Link>
+                            </li>
+
                             <li className="nav-item">
                                 <a className="nav-link" href="#">Contact US</a>
                             </li>
 
-                                <li className="nav-item">
-                                <Link className="nav-link" to={'/login'}>Log in</Link>
+                            <li className="nav-item">
+                                {isLoggedIn ? (
+                                    <Link
+                                        className="nav-link"
+                                        to="/"
+                                        onClick={logout}
+                                    >
+                                        Logout
+                                    </Link>
+                                ) : (
+                                    <Link className="nav-link" to="/login">
+                                        Login
+                                    </Link>
+                                )}
                             </li>
                         </ul>
                         <form className="d-flex">
@@ -37,7 +58,7 @@ const Navbar = () => {
                     </div>
                 </div>
             </nav>
-            <Home/>
+            <Home />
         </>
     )
 }
