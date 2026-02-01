@@ -14,8 +14,7 @@ export const ProductCard = ({ product }: any) => {
     }, [product.id])
 
     const addToCartProduct = () =>{
-
-        
+        axios.post()
     }
 
     const handleCart = () =>{

@@ -19,10 +19,7 @@ const Home = () => {
     }
 
     const [products, setProducts] = useState<Product[]>([]);
-    const [addToCartProducts, setSAddToCartProducts] = useState({
-        id:"",
-        qty:""
-    })
+
     useEffect(() => {
         const showData = async () => {
             const res = await axios.get("http://localhost:8080/product/getProducts"
