@@ -1,9 +1,10 @@
 import { useState } from "react";
 import axios from "axios";
 import './css/RegistrationFrom.css'
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 const RegistrationFrom = () => {
 
+    const navigate = useNavigate()
     const [formData, setFormData] = useState({
         fullName: "",
         email: "",
@@ -34,8 +35,11 @@ const RegistrationFrom = () => {
                 formData
             );
 
+
             console.log("Response:", response.data);
             alert("Registration successful");
+
+            navigate("/login");
 
         } catch (error) {
             console.error(error);

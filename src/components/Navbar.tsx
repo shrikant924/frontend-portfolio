@@ -2,10 +2,14 @@ import { Link } from 'react-router-dom';
 import './css/Navbar.css'
 import Home from './Home';
 import { useAuth } from '../context/AuthContext';
+import CartIcon from './CartIcon';
+import { useContext } from 'react';
+import { CartContext } from '../context/CartContext';
 
 const Navbar: React.FC = () => {
 
     const { isLoggedIn, logout } = useAuth();
+    const cart = useContext(CartContext);
 
     return (
         <>
@@ -27,14 +31,16 @@ const Navbar: React.FC = () => {
                                 <a className="nav-link" href="#">Cart</a>
                             </li>
 
-                                <li className="nav-item">
+                            <li className="nav-item">
                                 <Link className="nav-link" to={"/addProduct"}>Add Product</Link>
                             </li>
 
                             <li className="nav-item">
                                 <a className="nav-link" href="#">Contact US</a>
                             </li>
-
+                            <Link to="/cart" className="nav-link position-relative">
+                                <CartIcon count={cart?.count || 0} />
+                            </Link>
                             <li className="nav-item">
                                 {isLoggedIn ? (
                                     <Link
@@ -59,6 +65,7 @@ const Navbar: React.FC = () => {
                 </div>
             </nav>
             <Home />
+
         </>
     )
 }

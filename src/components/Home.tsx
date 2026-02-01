@@ -10,7 +10,6 @@ const Home = () => {
         category: string,
         description: string,
         discount: number,
-        image: string,
         name: string,
         originalPrice: number,
         price: number,
@@ -20,15 +19,19 @@ const Home = () => {
     }
 
     const [products, setProducts] = useState<Product[]>([]);
+    const [addToCartProducts, setSAddToCartProducts] = useState({
+        id:"",
+        qty:""
+    })
     useEffect(() => {
         const showData = async () => {
             const res = await axios.get("http://localhost:8080/product/getProducts"
-            ,
-            {
-                headers:{
-                    Authorization: `Bearer ${sessionStorage.getItem("token")}`
+                ,
+                {
+                    headers: {
+                        Authorization: `Bearer ${sessionStorage.getItem("token")}`
+                    }
                 }
-            }
             )
             setProducts(res.data)
         }
@@ -42,7 +45,7 @@ const Home = () => {
                 {products.map(product => (
                     <ProductCard product={product} />
                 ))
-                } 
+                }
             </div>
         </>
     )
