@@ -34,7 +34,7 @@ const Home = () => {
         }
         showData()
 
-    }, [])
+    }, [products])
 
     return (
         <>

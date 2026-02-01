@@ -1,8 +1,11 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import './css/AddProductForm.css'
 import axios from 'axios'
+import { useParams } from 'react-router-dom'
 
 export const AddProductForm = () => {
+
+    const { id } = useParams();
 
     const [productData, setProductData] = useState({
         brand: "",
@@ -18,24 +21,75 @@ export const AddProductForm = () => {
         stock: ""
     })
 
-    const addProduct = async () => {
+    const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
-        const payload = {
-            ...productData,
-            price:Number(productData.price),
-            discount:Number(productData.discount),
-            originalPrice:Number(productData.originalPrice),
-            rating:Number(productData.rating),
-            reviews:Number(productData.reviews),
-            stock:Number(productData.stock)
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files && e.target.files.length > 0) {
+            setSelectedFile(e.target.files[0]);
         }
-        const response = await axios.post("http://localhost:8080/product/addProduct", payload, {
+    };
+
+    const isEdit = !!id;
+
+    useEffect(() => {
+        const fetchProduct = async () => {
+            if (isEdit) {
+                const response = await axios.get(`http://localhost:8080/product/get/${id}`, {
+
+                    headers: {
+                        Authorization: `Bearer ${sessionStorage.getItem("token")}`
+                    }
+
+                });
+                setProductData({
+                    ...response.data,
+                    image: response.data.imageData
+                });
+            }
+        }
+        fetchProduct();
+    }, [id, isEdit])
+
+    const formData = new FormData();
+
+    const addProduct = async () => {
+        formData.append(
+            "product",
+            new Blob(
+                [JSON.stringify({
+                    ...productData,
+                    price: Number(productData.price),
+                    discount: Number(productData.discount),
+                    originalPrice: Number(productData.originalPrice),
+                    rating: Number(productData.rating),
+                    reviews: Number(productData.reviews),
+                    stock: Number(productData.stock)
+                })],
+                { type: "application/json" }
+            )
+        );
+
+        // FILE part
+        if (selectedFile) {
+            formData.append("image", selectedFile);
+        }
+
+
+
+        const response = await axios({
+            method: isEdit ? "put" : "post",
+            url: isEdit
+                ? `http://localhost:8080/product/updateProduct/${id}`
+                : "http://localhost:8080/product/addProduct",
+            data: formData,
             headers: {
+              
                 Authorization: `Bearer ${sessionStorage.getItem("token")}`
             }
-        })
+        });
 
-        console.log(response);
+
+        alert(response.data)
     }
 
     const handleChange = (e: { target: { name: any; value: any; }; }) => {
@@ -48,7 +102,7 @@ export const AddProductForm = () => {
         <>
             <div className="form-wrapper">
                 <div className="form-heading">
-                    <h1>Add product</h1>
+                    <h1>{id ? "Edit Product" : "Add product"}</h1>
                 </div>
 
                 <div className="d-flex justify-content-between align-items-center">
@@ -58,7 +112,7 @@ export const AddProductForm = () => {
 
                 <div className="d-flex align-items-center justify-content-between">
                     <label htmlFor="category">Select  Category : </label>
-                    <select name="category" id="category">
+                    <select name="category" id="category" value={productData.category} onChange={handleChange}>
                         <option value="electronic">Electronic</option>
                         <option value="cloths">Cloths</option>
                         <option value="houseHolds">HouseHolds</option>
@@ -77,10 +131,7 @@ export const AddProductForm = () => {
                     <input className="form-control" type="number" onChange={handleChange} name="discount" value={productData.discount}></input>
                 </div>
 
-                <div className="d-flex justify-content-between align-items-center">
-                    <label htmlFor="product-img">Image :</label>
-                    <input className="form-control" type="file" name="image" id="pic" />
-                </div>
+                <input className="form-control" type="file" name="image" onChange={handleFileChange} id="pic" />
 
                 <div className="d-flex justify-content-between align-items-center">
                     <label htmlFor="product-name">Name : </label>
@@ -113,7 +164,7 @@ export const AddProductForm = () => {
                 </div>
 
                 <div className="addProductBtn d-flex justify-content-center align-items-center">
-                    <button type="button" className='btn btn-success' onClick={addProduct}>Add Product</button>
+                    <button type="button" className='btn btn-success' onClick={addProduct}>{id ? "Update product" : "Add Product"}</button>
                 </div>
             </div>
         </>
