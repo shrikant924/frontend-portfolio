@@ -6,16 +6,20 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import { AuthProvider } from './context/AuthContext'
 import { CartProvider } from './context/CartContext'
+import { Provider } from 'react-redux';
+import { store } from './app/store';
 
 
 createRoot(document.getElementById('root')!).render(
   <BrowserRouter>
 
-    <AuthProvider>
-      <CartProvider>
-        <App />
-      </CartProvider>
-    </AuthProvider>
+    <Provider store={store}>
+      <AuthProvider>
+        <CartProvider>
+          <App />
+        </CartProvider>
+      </AuthProvider>
+    </Provider>
 
   </BrowserRouter>
 )

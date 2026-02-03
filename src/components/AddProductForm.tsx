@@ -71,7 +71,7 @@ export const AddProductForm = () => {
 
         // FILE part
         if (selectedFile) {
-            formData.append("image", selectedFile);
+            formData.append("imageFile", selectedFile);
         }
 
 
@@ -131,7 +131,7 @@ export const AddProductForm = () => {
                     <input className="form-control" type="number" onChange={handleChange} name="discount" value={productData.discount}></input>
                 </div>
 
-                <input className="form-control" type="file" name="image" onChange={handleFileChange} id="pic" />
+                <input className="form-control" type="file" name="imageFile" onChange={handleFileChange} id="pic" />
 
                 <div className="d-flex justify-content-between align-items-center">
                     <label htmlFor="product-name">Name : </label>

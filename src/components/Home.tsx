@@ -1,46 +1,16 @@
-import axios from "axios";
-import { useEffect, useState } from "react";
 import './css/Home.css';
 import { ProductCard } from "./ProductCard";
+import { useFetchProductsQuery } from "../services/product";
 
 const Home = () => {
-    type Product = {
-        id: number,
-        brand: string,
-        category: string,
-        description: string,
-        discount: number,
-        name: string,
-        originalPrice: number,
-        price: number,
-        rating: number,
-        reviews: number,
-        stock: number
-    }
 
-    const [products, setProducts] = useState<Product[]>([]);
-
-    useEffect(() => {
-        const showData = async () => {
-            const res = await axios.get("http://localhost:8080/product/getProducts"
-                ,
-                {
-                    headers: {
-                        Authorization: `Bearer ${sessionStorage.getItem("token")}`
-                    }
-                }
-            )
-            setProducts(res.data)
-        }
-        showData()
-
-    }, [products])
+    const {data:products} = useFetchProductsQuery();
 
     return (
         <>
             <div className="main-container">
-                {products.map(product => (
-                    <ProductCard product={product} />
+                {Array.isArray(products) && products.map((product: any) => (
+                    <ProductCard key={product.id} product={product} />
                 ))
                 }
             </div>
