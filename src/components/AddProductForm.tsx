@@ -37,7 +37,7 @@ export const AddProductForm = () => {
                 const response = await axios.get(`http://localhost:8080/product/get/${id}`, {
 
                     headers: {
-                        Authorization: `Bearer ${sessionStorage.getItem("token")}`
+                        Authorization: `Bearer ${localStorage.getItem("token")}`
                     }
 
                 });
@@ -84,7 +84,7 @@ export const AddProductForm = () => {
             data: formData,
             headers: {
               
-                Authorization: `Bearer ${sessionStorage.getItem("token")}`
+                Authorization: `Bearer ${localStorage.getItem("token")}`
             }
         });
 

@@ -1,21 +1,20 @@
-import './css/Home.css';
-import { ProductCard } from "./ProductCard";
-import { useFetchProductsQuery } from "../services/product";
+import { useFetchProductsQuery } from "../features/product/productApi"
+import { ProductCard } from "./ProductCard"
+import './css/Home.css'
 
 const Home = () => {
+  const { data: products, isLoading, error } = useFetchProductsQuery()
 
-    const {data:products} = useFetchProductsQuery();
+  if (isLoading) return <p>Loading...</p>
+  if (error) return <p>Something went wrong</p>
 
-    return (
-        <>
-            <div className="main-container">
-                {Array.isArray(products) && products.map((product: any) => (
-                    <ProductCard key={product.id} product={product} />
-                ))
-                }
-            </div>
-        </>
-    )
+  return (
+    <div className="main-container">
+      {products?.map((product) => (
+        <ProductCard key={product.id} product={product} />
+      ))}
+    </div>
+  )
 }
 
-export default Home;
+export default Home

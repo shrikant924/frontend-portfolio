@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import './css/Login.css';
-import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { useLoginMutation } from '../features/auth/authApi';
+import { useDispatch } from 'react-redux';
+import { setCredentials } from '../features/auth/authSlice';
 
 interface LoginForm {
     username: string,
@@ -10,8 +11,11 @@ interface LoginForm {
 }
 
 const Login = () => {
-    const { login } = useAuth()
+
+    const [loginApi] = useLoginMutation()
     const navigate = useNavigate();
+    const dispatch = useDispatch();
+
     const [inputData, setInputData] = useState<LoginForm>(
         {
             username: "",
@@ -31,11 +35,10 @@ const Login = () => {
     const doLogin = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
-            const res = await axios.post("http://localhost:8080/api/login", inputData, { withCredentials: true });
-            login(res?.data.token);
+            const response = await loginApi(inputData).unwrap();
+            dispatch(setCredentials(response));
             alert("Logged in successfully");
             navigate("/");
-
 
         } catch (error: any) {
             alert(error.response?.data || "Login failed")

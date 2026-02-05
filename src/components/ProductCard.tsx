@@ -1,21 +1,23 @@
 import { useContext, useEffect, useState } from "react";
 import axios from "axios";
-import { CartContext, CartProvider } from "../context/CartContext";
 import { useNavigate } from "react-router-dom";
 import {
   useAddProductToCartByIdAndQtyMutation,
   useDeleteProductByIdMutation,
-} from "../services/product";
+} from "../features/product/productApi";
+import { useDispatch } from "react-redux";
+import { decraseCount, increaseCount } from "../features/cart/cartSlice";
 
 export const ProductCard = ({ product }: any) => {
   const [useDeleteProductById] = useDeleteProductByIdMutation();
   const [imageUrl, setImageUrl] = useState<string>("");
   const [productPurchaseQty, setProductPurchaseQty] = useState(1);
-  const [balancedStock, setBalancedStock] = useState();
+  const [balancedStock, setBalancedStock] = useState<any>(undefined);
   const [addProductToCart] = useAddProductToCartByIdAndQtyMutation();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  const cart = useContext(CartContext);
+  // const cart = useContext(CartContext);
   useEffect(() => {
     loadImageFromDB();
   }, [product.id]);
@@ -31,12 +33,10 @@ export const ProductCard = ({ product }: any) => {
       qty: productPurchaseQty,
     }).unwrap();
 
-    // setBalancedStock(response);
-    console.log(response);
+    setBalancedStock(response);
   };
 
   const handleCart = () => {
-    cart?.increaseCount();
     addToCartProduct();
   };
 
@@ -50,7 +50,7 @@ export const ProductCard = ({ product }: any) => {
       {
         responseType: "arraybuffer",
         headers: {
-          Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       },
     );
@@ -60,7 +60,7 @@ export const ProductCard = ({ product }: any) => {
   };
 
   return (
-    <CartProvider>
+   
       <div className="card-wrapper">
         <div className="d-flex align-items-center justify-content-evenly w-100">
           <div onClick={handleEdit}>
@@ -87,7 +87,7 @@ export const ProductCard = ({ product }: any) => {
             disabled={
               product.stock === 0 || productPurchaseQty >= product.stock
             }
-            onClick={() => setProductPurchaseQty(productPurchaseQty + 1)}
+            onClick={() => dispatch(increaseCount())}
           >
             +
           </button>
@@ -97,7 +97,7 @@ export const ProductCard = ({ product }: any) => {
           <button
             className="btn btn-sm btn-outline-danger"
             disabled={productPurchaseQty <= 1}
-            onClick={() => setProductPurchaseQty(productPurchaseQty - 1)}
+            onClick={() => dispatch(decraseCount())}
           >
             -
           </button>
@@ -108,6 +108,5 @@ export const ProductCard = ({ product }: any) => {
           </button>
         </div>
       </div>
-    </CartProvider>
   );
 };
