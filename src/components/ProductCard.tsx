@@ -1,39 +1,66 @@
-import { useContext, useEffect, useState } from "react";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import {
   useAddProductToCartByIdAndQtyMutation,
   useDeleteProductByIdMutation,
+  useGetProductImageQuery,
 } from "../features/product/productApi";
-import { useDispatch } from "react-redux";
-import { decraseCount, increaseCount } from "../features/cart/cartSlice";
+import { useAppDispatch, useAppSelector } from "../app/hook";
+import {
+  addToCart,
+  increaseQty,
+  decreaseQty,
+} from "../features/product/productSlice";
+import "./css/AddProductForm.css";
 
 export const ProductCard = ({ product }: any) => {
-  const [useDeleteProductById] = useDeleteProductByIdMutation();
-  const [imageUrl, setImageUrl] = useState<string>("");
-  const [productPurchaseQty, setProductPurchaseQty] = useState(1);
-  const [balancedStock, setBalancedStock] = useState<any>(undefined);
+  const [deleteProductById] = useDeleteProductByIdMutation();
   const [addProductToCart] = useAddProductToCartByIdAndQtyMutation();
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
 
-  // const cart = useContext(CartContext);
-  useEffect(() => {
-    loadImageFromDB();
-  }, [product.id]);
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+
+  const { data: imageUrl, isLoading } = useGetProductImageQuery(product.id);
+
+  // FIX: get qty for THIS product only
+  const purchaseQty = useAppSelector(
+    (state) =>
+      state.productCart.items.find((item) => item.productId === product.id)
+        ?.qty || 0,
+  );
 
   const handleDelete = async () => {
-    const res = useDeleteProductById(product.id);
-    console.log(res);
+    try {
+      await deleteProductById(product.id).unwrap();
+      alert("Product deleted successfully");
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const addToCartProduct = async () => {
-    const response = await addProductToCart({
-      id: product.id,
-      qty: productPurchaseQty,
-    }).unwrap();
+    try {
+      const qty = purchaseQty || 1;
 
-    setBalancedStock(response);
+      const response = await addProductToCart({
+        id: product.id,
+        qty,
+      }).unwrap();
+
+      // update redux cart state
+      dispatch(
+        addToCart({
+          productId: product.id,
+          name: product.name,
+          price: product.price,
+          imageUrl,
+          qty,
+        }),
+      );
+
+      console.log(response);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const handleCart = () => {
@@ -44,69 +71,63 @@ export const ProductCard = ({ product }: any) => {
     navigate(`/editProduct/${product.id}`);
   };
 
-  const loadImageFromDB = async () => {
-    const response = await axios.get(
-      `http://localhost:8080/product/image/${product.id}`,
-      {
-        responseType: "arraybuffer",
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      },
-    );
-    const blob = new Blob([response.data], { type: "image/jpeg" });
-    const url = URL.createObjectURL(blob);
-    setImageUrl(url);
-  };
-
   return (
-   
-      <div className="card-wrapper">
-        <div className="d-flex align-items-center justify-content-evenly w-100">
-          <div onClick={handleEdit}>
-            <i className="bi bi-pencil-square fs-1"></i>
-          </div>
-          <div onClick={handleDelete}>
-            <i className="bi bi-trash fs-1"></i>
-          </div>
+    <div className="card-wrapper">
+      <div className="d-flex align-items-center justify-content-evenly w-100">
+        <div onClick={handleEdit}>
+          <i className="bi bi-pencil-square fs-1"></i>
         </div>
-        <div className="image-logo">
-          <img src={imageUrl} alt="not found" />
-        </div>
-        <div className="brand">{product.brand}</div>
-        <div className="description">{product.description}</div>
-        <div className="price">
-          <label>Price :</label> {product.price} Rupees
-        </div>
-        <div className="stock">
-          <label>Stock :</label> {product.stock - productPurchaseQty} Qty
-        </div>
-        <div className="product-qty align-items-center d-flex gap-md-2 justify-content-center product-qty">
-          <button
-            className="btn btn-sm btn-outline-primary"
-            disabled={
-              product.stock === 0 || productPurchaseQty >= product.stock
-            }
-            onClick={() => dispatch(increaseCount())}
-          >
-            +
-          </button>
 
-          <span>{productPurchaseQty}</span>
-
-          <button
-            className="btn btn-sm btn-outline-danger"
-            disabled={productPurchaseQty <= 1}
-            onClick={() => dispatch(decraseCount())}
-          >
-            -
-          </button>
-        </div>
-        <div>
-          <button className="btn btn-outline-danger" onClick={handleCart}>
-            Add to cart
-          </button>
+        <div onClick={handleDelete}>
+          <i className="bi bi-trash fs-1"></i>
         </div>
       </div>
+
+      <div className="image-logo">
+        {isLoading ? (
+          <h2>Loading...</h2>
+        ) : (
+          <img src={imageUrl} alt="not found" />
+        )}
+      </div>
+
+      <div className="brand">{product.brand}</div>
+
+      <div className="description">{product.description}</div>
+
+      <div className="price">
+        <label>Price :</label> {product.price} Rupees
+      </div>
+
+      <div className="stock">
+        <label>Stock :</label> {product.stock - purchaseQty} Qty
+      </div>
+
+      <div className="product-qty align-items-center d-flex gap-md-2 justify-content-center product-qty">
+        <button
+          className="btn btn-sm btn-outline-primary"
+          disabled={product.stock === 0 || purchaseQty >= product.stock}
+          onClick={() => dispatch(increaseQty(product.id))}
+        >
+          +
+        </button>
+
+        <span>{purchaseQty}</span>
+
+        <button
+          className="btn btn-sm btn-outline-danger"
+          disabled={purchaseQty <= 1}
+          onClick={() => dispatch(decreaseQty(product.id))}
+        >
+          -
+        </button>
+      </div>
+
+      <div>
+        <button className="btn btn-outline-danger" onClick={handleCart}>
+          Add to cart
+        </button>
+      </div>
+    </div>
   );
 };

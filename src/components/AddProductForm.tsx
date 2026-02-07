@@ -1,20 +1,35 @@
-import { useEffect, useState } from "react";
-import "./css/AddProductForm.css";
-import axios from "axios";
-import { useParams } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+
+import {
+  useAddProductMutation,
+  useUpdateProductByIdMutation,
+  useFetchProductByIdQuery,
+} from "../features/product/productApi";
 
 export const AddProductForm = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
 
-  const col: number = 30;
-  const row: number = 5;
+  const isEdit = Boolean(id);
 
-  const [productData, setProductData] = useState({
+  // Fetch single product only in edit mode
+  const { data: product, isLoading } = useFetchProductByIdQuery(Number(id), {
+    skip: !isEdit,
+  });
+
+  const [addProduct, { isLoading: isAdding }] = useAddProductMutation();
+
+  const [updateProduct, { isLoading: isUpdating }] =
+    useUpdateProductByIdMutation();
+
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+
+  const [formState, setFormState] = useState({
     brand: "",
     category: "",
     description: "",
     discount: "",
-    image: "",
     name: "",
     originalPrice: "",
     price: "",
@@ -23,223 +38,122 @@ export const AddProductForm = () => {
     stock: "",
   });
 
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  // ✅ Populate form in edit mode
+  useEffect(() => {
+    if (product) {
+      setFormState({
+        brand: product.brand,
+        category: product.category,
+        description: product.description,
+        discount: product.discount.toString(),
+        name: product.name,
+        originalPrice: product.originalPrice.toString(),
+        price: product.price.toString(),
+        rating: product.rating.toString(),
+        reviews: product.reviews.toString(),
+        stock: product.stock.toString(),
+      });
+    }
+  }, [product]);
+
+  const handleChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >,
+  ) => {
+    const { name, value } = e.target;
+
+    setFormState((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files.length > 0) {
+    if (e.target.files?.[0]) {
       setSelectedFile(e.target.files[0]);
     }
   };
 
-  const isEdit = !!id;
+  const handleSubmit = async () => {
+    try {
+      const formData = new FormData();
 
-  useEffect(() => {
-    const fetchProduct = async () => {
-      if (isEdit) {
-        const response = await axios.get(
-          `http://localhost:8080/product/get/${id}`,
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-          },
-        );
-        setProductData({
-          ...response.data,
-          image: response.data.imageData,
-        });
+      formData.append(
+        "product",
+        new Blob(
+          [
+            JSON.stringify({
+              ...formState,
+              price: Number(formState.price),
+              discount: Number(formState.discount),
+              originalPrice: Number(formState.originalPrice),
+              rating: Number(formState.rating),
+              reviews: Number(formState.reviews),
+              stock: Number(formState.stock),
+            }),
+          ],
+          { type: "application/json" },
+        ),
+      );
+
+      if (selectedFile) {
+        formData.append("imageFile", selectedFile);
       }
-    };
-    fetchProduct();
-  }, [id, isEdit]);
 
-  const formData = new FormData();
+      if (isEdit) {
+        await updateProduct({
+          id: id,
+          formData,
+        }).unwrap();
 
-  const addProduct = async () => {
-    formData.append(
-      "product",
-      new Blob(
-        [
-          JSON.stringify({
-            ...productData,
-            price: Number(productData.price),
-            discount: Number(productData.discount),
-            originalPrice: Number(productData.originalPrice),
-            rating: Number(productData.rating),
-            reviews: Number(productData.reviews),
-            stock: Number(productData.stock),
-          }),
-        ],
-        { type: "application/json" },
-      ),
-    );
+        alert("Product updated");
+      } else {
+        await addProduct(formData).unwrap();
 
-    // FILE part
-    if (selectedFile) {
-      formData.append("imageFile", selectedFile);
+        alert("Product added");
+      }
+
+      navigate("/");
+    } catch (error) {
+      alert("Operation failed");
     }
-
-    const response = await axios({
-      method: isEdit ? "put" : "post",
-      url: isEdit
-        ? `http://localhost:8080/product/updateProduct/${id}`
-        : "http://localhost:8080/product/addProduct",
-      data: formData,
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-    });
-
-    alert(response.data);
   };
 
-  const handleChange = (e: { target: { name: any; value: any } }) => {
-    setProductData({
-      ...productData,
-      [e.target.name]: e.target.value,
-    });
-  };
+  if (isEdit && isLoading) {
+    return <h2>Loading...</h2>;
+  }
+
   return (
-    <>
-      <div className="form-wrapper">
-        <div className="form-heading">
-          <h1>{id ? "Edit Product" : "Add product"}</h1>
-        </div>
+    <div>
+      <h2>{isEdit ? "Edit Product" : "Add Product"}</h2>
 
-        <div className="d-flex justify-content-between align-items-center">
-          <label htmlFor="brand">Brand : </label>
-          <input
-            className="form-control"
-            type="text"
-            onChange={handleChange}
-            name="brand"
-            value={productData.brand}
-          />
-        </div>
+      <input
+        name="brand"
+        value={formState.brand}
+        onChange={handleChange}
+        placeholder="Brand"
+      />
 
-        <div className="d-flex align-items-center justify-content-between">
-          <label htmlFor="category">Select Category : </label>
-          <select
-            name="category"
-            id="category"
-            value={productData.category}
-            onChange={handleChange}
-          >
-            <option value="electronic">Electronic</option>
-            <option value="cloths">Cloths</option>
-            <option value="houseHolds">HouseHolds</option>
-            <option value="electrical">Electrical</option>
-            <option value="others">Others</option>
-          </select>
-        </div>
+      <input
+        name="name"
+        value={formState.name}
+        onChange={handleChange}
+        placeholder="Name"
+      />
 
-        <div className="d-flex align-items-center justify-content-between">
-          <label htmlFor="description">Description : </label>
-          <textarea
-            name="description"
-            id="description"
-            onChange={handleChange}
-            cols={col}
-            rows={row}
-            value={productData.description}
-          ></textarea>
-        </div>
+      <input
+        name="price"
+        value={formState.price}
+        onChange={handleChange}
+        placeholder="Price"
+      />
 
-        <div className="d-flex justify-content-between align-items-center">
-          <label htmlFor="discount">Discount : </label>
-          <input
-            className="form-control"
-            type="number"
-            onChange={handleChange}
-            name="discount"
-            value={productData.discount}
-          ></input>
-        </div>
+      <input type="file" onChange={handleFileChange} />
 
-        <input
-          className="form-control"
-          type="file"
-          name="imageFile"
-          onChange={handleFileChange}
-          id="pic"
-        />
-
-        <div className="d-flex justify-content-between align-items-center">
-          <label htmlFor="product-name">Name : </label>
-          <input
-            className="form-control"
-            onChange={handleChange}
-            type="text"
-            name="name"
-            value={productData.name}
-            id="product-name"
-          />
-        </div>
-
-        <div className="d-flex justify-content-between align-items-center">
-          <label htmlFor="product-original-price">Original price : </label>
-          <input
-            className="form-control"
-            type="text"
-            onChange={handleChange}
-            name="originalPrice"
-            value={productData.originalPrice}
-          ></input>
-        </div>
-
-        <div className="d-flex justify-content-between align-items-center">
-          <label htmlFor="product-price">Price : </label>
-          <input
-            className="form-control"
-            type="text"
-            onChange={handleChange}
-            name="price"
-            value={productData.price}
-          ></input>
-        </div>
-        <div className="d-flex justify-content-between align-items-center">
-          <label htmlFor="product-rating">Rating : </label>
-          <input
-            className="form-control"
-            type="text"
-            onChange={handleChange}
-            name="rating"
-            value={productData.rating}
-          ></input>
-        </div>
-
-        <div className=" d-flex justify-content-between align-items-center">
-          <label htmlFor="product-review">review : </label>
-          <input
-            className="form-control"
-            type="text"
-            onChange={handleChange}
-            name="reviews"
-            value={productData.reviews}
-          ></input>
-        </div>
-
-        <div className="d-flex align-items-center justify-content-between">
-          <label htmlFor="product-stock">stock : </label>
-          <input
-            className="form-control"
-            onChange={handleChange}
-            type="text"
-            name="stock"
-            value={productData.stock}
-          ></input>
-        </div>
-
-        <div className="addProductBtn d-flex justify-content-center align-items-center">
-          <button
-            type="button"
-            className="btn btn-success"
-            onClick={addProduct}
-          >
-            {id ? "Update product" : "Add Product"}
-          </button>
-        </div>
-      </div>
-    </>
+      <button onClick={handleSubmit} disabled={isAdding || isUpdating}>
+        {isEdit ? "Update" : "Add"}
+      </button>
+    </div>
   );
 };
