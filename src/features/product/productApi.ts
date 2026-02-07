@@ -5,6 +5,7 @@ export const productApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
       fetchProducts: builder.query<Product[], void>({
         query: () => "product/getProducts",
+        providesTags:["product"]
       }),
   
       fetchProductById: builder.query<Product, number>({
@@ -16,6 +17,7 @@ export const productApi = baseApi.injectEndpoints({
   
       deleteProductById: builder.mutation<Product, number>({
         query: (id) => ({ url: `product/delete/${id}`, method: "DELETE" }),
+        invalidatesTags:["product"]
       }),
   
       addProductToCartByIdAndQty: builder.mutation<
@@ -47,6 +49,7 @@ export const productApi = baseApi.injectEndpoints({
           body: formData,
           responseHandler: "text",
         }),
+        invalidatesTags:["product"]
       }),
     }),
   });
