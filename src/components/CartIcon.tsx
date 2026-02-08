@@ -1,10 +1,9 @@
-import { FaShoppingCart } from "react-icons/fa";
-import './css/CartIcon.css'
-import { useSelector } from "react-redux";
-
+import { FaShoppingCart } from 'react-icons/fa';
+import './css/CartIcon.css';
+import { useSelector } from 'react-redux';
 
 const CartIcon = () => {
-  const count = useSelector((state:any)=> state.cart.count)
+  const count = useSelector((state: any) => state.cart.count);
   return (
     <div className="cart-icon">
       <FaShoppingCart size={22} />

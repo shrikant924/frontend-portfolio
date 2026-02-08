@@ -1,11 +1,11 @@
-import { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 
 import {
   useAddProductMutation,
   useUpdateProductByIdMutation,
   useFetchProductByIdQuery,
-} from "../features/product/productApi";
+} from '../features/product/productApi';
 
 export const AddProductForm = () => {
   const { id } = useParams();
@@ -20,22 +20,21 @@ export const AddProductForm = () => {
 
   const [addProduct, { isLoading: isAdding }] = useAddProductMutation();
 
-  const [updateProduct, { isLoading: isUpdating }] =
-    useUpdateProductByIdMutation();
+  const [updateProduct, { isLoading: isUpdating }] = useUpdateProductByIdMutation();
 
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   const [formState, setFormState] = useState({
-    brand: "",
-    category: "",
-    description: "",
-    discount: "",
-    name: "",
-    originalPrice: "",
-    price: "",
-    rating: "",
-    reviews: "",
-    stock: "",
+    brand: '',
+    category: '',
+    description: '',
+    discount: '',
+    name: '',
+    originalPrice: '',
+    price: '',
+    rating: '',
+    reviews: '',
+    stock: '',
   });
 
   // ✅ Populate form in edit mode
@@ -57,9 +56,7 @@ export const AddProductForm = () => {
   }, [product]);
 
   const handleChange = (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >,
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
   ) => {
     const { name, value } = e.target;
 
@@ -80,7 +77,7 @@ export const AddProductForm = () => {
       const formData = new FormData();
 
       formData.append(
-        "product",
+        'product',
         new Blob(
           [
             JSON.stringify({
@@ -93,12 +90,12 @@ export const AddProductForm = () => {
               stock: Number(formState.stock),
             }),
           ],
-          { type: "application/json" },
+          { type: 'application/json' },
         ),
       );
 
       if (selectedFile) {
-        formData.append("imageFile", selectedFile);
+        formData.append('imageFile', selectedFile);
       }
 
       if (isEdit) {
@@ -107,16 +104,16 @@ export const AddProductForm = () => {
           formData,
         }).unwrap();
 
-        alert("Product updated");
+        alert('Product updated');
       } else {
         await addProduct(formData).unwrap();
 
-        alert("Product added");
+        alert('Product added');
       }
 
-      navigate("/");
+      navigate('/');
     } catch (error) {
-      alert("Operation failed");
+      alert('Operation failed');
     }
   };
 
@@ -126,33 +123,27 @@ export const AddProductForm = () => {
 
   return (
     <div>
-      <h2>{isEdit ? "Edit Product" : "Add Product"}</h2>
+      <h2>{isEdit ? 'Edit Product' : 'Add Product'}</h2>
+
+      <input name="brand" value={formState.brand} onChange={handleChange} placeholder="Brand" />
+
+      <input name="name" value={formState.name} onChange={handleChange} placeholder="Name" />
+
+      <input name="price" value={formState.price} onChange={handleChange} placeholder="Price" />
+
+      <input name="stock" value={formState.stock} onChange={handleChange} placeholder="stock" />
 
       <input
-        name="brand"
-        value={formState.brand}
+        name="description"
+        value={formState.description}
         onChange={handleChange}
-        placeholder="Brand"
-      />
-
-      <input
-        name="name"
-        value={formState.name}
-        onChange={handleChange}
-        placeholder="Name"
-      />
-
-      <input
-        name="price"
-        value={formState.price}
-        onChange={handleChange}
-        placeholder="Price"
+        placeholder="description"
       />
 
       <input type="file" onChange={handleFileChange} />
 
       <button onClick={handleSubmit} disabled={isAdding || isUpdating}>
-        {isEdit ? "Update" : "Add"}
+        {isEdit ? 'Update' : 'Add'}
       </button>
     </div>
   );

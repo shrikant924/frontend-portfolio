@@ -1,55 +1,49 @@
-import { baseApi } from "../../services/baseApi";
-import type { Product } from "./ProductType";
+import { baseApi } from '../../services/baseApi';
+import type { Product } from './ProductType';
 
 export const productApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     fetchProducts: builder.query<Product[], void>({
-      query: () => "product/getProducts",
-      providesTags: ["product"],
+      query: () => 'product/getProducts',
+      providesTags: ['product'],
     }),
 
     fetchProductById: builder.query<Product, number>({
       query: (id) => ({
         url: `product/get/${id}`,
-        method: "GET",
+        method: 'GET',
       }),
     }),
 
     deleteProductById: builder.mutation<Product, number>({
-      query: (id) => ({ url: `product/delete/${id}`, method: "DELETE" }),
-      invalidatesTags: ["product"],
+      query: (id) => ({ url: `product/delete/${id}`, method: 'DELETE' }),
+      invalidatesTags: ['product'],
     }),
 
-    addProductToCartByIdAndQty: builder.mutation<
-      Product,
-      { id: string; qty: number }
-    >({
+    addProductToCartByIdAndQty: builder.mutation<Product, { id: string; qty: number }>({
       query: ({ id, qty }) => ({
         url: `product/addToCart/${id}/${qty}`,
-        method: "POST",
+        method: 'POST',
       }),
     }),
 
-    updateProductById: builder.mutation<
-      void,
-      { id: string | undefined; formData: FormData }
-    >({
+    updateProductById: builder.mutation<void, { id: string | undefined; formData: FormData }>({
       query: ({ id, formData }) => ({
         url: `product/updateProduct/${id}`,
-        method: "PUT",
+        method: 'PUT',
         body: formData,
-        responseHandler: "text",
+        responseHandler: 'text',
       }),
     }),
 
     addProduct: builder.mutation<void, FormData>({
       query: (formData) => ({
-        url: "product/addProduct",
-        method: "POST",
+        url: 'product/addProduct',
+        method: 'POST',
         body: formData,
-        responseHandler: "text",
+        responseHandler: 'text',
       }),
-      invalidatesTags: ["product"],
+      invalidatesTags: ['product'],
     }),
 
     getProductImage: builder.query<string, number>({
@@ -64,11 +58,8 @@ export const productApi = baseApi.injectEndpoints({
   }),
 });
 
-export const {
-  useFetchProductsQuery,
-  useFetchProductByIdQuery,
-  useGetProductImageQuery,
-} = productApi;
+export const { useFetchProductsQuery, useFetchProductByIdQuery, useGetProductImageQuery } =
+  productApi;
 export const {
   useDeleteProductByIdMutation,
   useAddProductToCartByIdAndQtyMutation,

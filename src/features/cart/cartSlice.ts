@@ -1,22 +1,21 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
   count: 0,
 };
 
 export const cartSlice = createSlice({
-  name: "cart",
+  name: 'cart',
   initialState,
-  reducers:{
-    increaseCount : (state) =>{
-        state.count += 1;
+  reducers: {
+    increaseCount: (state) => {
+      state.count += 1;
     },
-    decraseCount : (state) => {
-        state.count -= 1;
+    decraseCount: (state) => {
+      state.count -= 1;
     },
-  }
+  },
 });
 
-export const {increaseCount , decraseCount} = cartSlice.actions;
-export default cartSlice.reducer
-
+export const { increaseCount, decraseCount } = cartSlice.actions;
+export default cartSlice.reducer;

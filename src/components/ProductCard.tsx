@@ -1,21 +1,18 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
 import {
   useAddProductToCartByIdAndQtyMutation,
   useDeleteProductByIdMutation,
   useGetProductImageQuery,
-} from "../features/product/productApi";
-import { useAppDispatch, useAppSelector } from "../app/hook";
-import {
-  addToCart,
-  increaseQty,
-  decreaseQty,
-} from "../features/product/productSlice";
-import "./css/AddProductForm.css";
+} from '../features/product/productApi';
+import { useAppDispatch, useAppSelector } from '../app/hook';
+import { addToCart } from '../features/product/productSlice';
+import './css/AddProductForm.css';
+import { useState } from 'react';
 
 export const ProductCard = ({ product }: any) => {
   const [deleteProductById] = useDeleteProductByIdMutation();
   const [addProductToCart] = useAddProductToCartByIdAndQtyMutation();
-
+  const [productPurchaseQty, setProductPurchaseQty] = useState(0);
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
@@ -23,15 +20,13 @@ export const ProductCard = ({ product }: any) => {
 
   // FIX: get qty for THIS product only
   const purchaseQty = useAppSelector(
-    (state) =>
-      state.productCart.items.find((item) => item.productId === product.id)
-        ?.qty || 0,
+    (state) => state.productCart.items.find((item) => item.productId === product.id)?.qty || 0,
   );
 
   const handleDelete = async () => {
     try {
       await deleteProductById(product.id).unwrap();
-      alert("Product deleted successfully");
+      alert('Product deleted successfully');
     } catch (error) {
       console.error(error);
     }
@@ -84,11 +79,7 @@ export const ProductCard = ({ product }: any) => {
       </div>
 
       <div className="image-logo">
-        {isLoading ? (
-          <h2>Loading...</h2>
-        ) : (
-          <img src={imageUrl} alt="not found" />
-        )}
+        {isLoading ? <h2>Loading...</h2> : <img src={imageUrl} alt="not found" />}
       </div>
 
       <div className="brand">{product.brand}</div>
@@ -100,24 +91,24 @@ export const ProductCard = ({ product }: any) => {
       </div>
 
       <div className="stock">
-        <label>Stock :</label> {product.stock - purchaseQty} Qty
+        <label>Stock :</label> {product.stock - productPurchaseQty} Qty
       </div>
 
       <div className="product-qty align-items-center d-flex gap-md-2 justify-content-center product-qty">
         <button
           className="btn btn-sm btn-outline-primary"
-          disabled={product.stock === 0 || purchaseQty >= product.stock}
-          onClick={() => dispatch(increaseQty(product.id))}
+          disabled={product.stock === 0 || productPurchaseQty >= product.stock}
+          onClick={() => setProductPurchaseQty(productPurchaseQty + 1)}
         >
           +
         </button>
 
-        <span>{purchaseQty}</span>
+        <span>{productPurchaseQty}</span>
 
         <button
           className="btn btn-sm btn-outline-danger"
-          disabled={purchaseQty <= 1}
-          onClick={() => dispatch(decreaseQty(product.id))}
+          disabled={productPurchaseQty <= 1}
+          onClick={() => setProductPurchaseQty(productPurchaseQty - 1)}
         >
           -
         </button>

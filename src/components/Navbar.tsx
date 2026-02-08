@@ -1,9 +1,9 @@
-import { Link } from "react-router-dom";
-import "./css/Navbar.css";
-import Home from "./Home";
-import CartIcon from "./CartIcon";
-import { useDispatch } from "react-redux";
-import { logout } from "../features/auth/authSlice";
+import { Link } from 'react-router-dom';
+import './css/Navbar.css';
+import Home from './Home';
+import CartIcon from './CartIcon';
+import { useDispatch } from 'react-redux';
+import { logout } from '../features/auth/authSlice';
 
 const Navbar: React.FC = () => {
   const dispatch = useDispatch();
@@ -11,7 +11,7 @@ const Navbar: React.FC = () => {
     <>
       <nav className="nav-container navbar navbar-expand-lg navbar-light ">
         <div className="container-fluid">
-          <Link className="navbar-brand" to={"/"}>
+          <Link className="navbar-brand" to={'/'}>
             ShopNow
           </Link>
           <button
@@ -44,7 +44,7 @@ const Navbar: React.FC = () => {
               </li>
 
               <li className="nav-item">
-                <Link className="nav-link" to={"/addProduct"}>
+                <Link className="nav-link" to={'/addProduct'}>
                   Add Product
                 </Link>
               </li>
@@ -58,12 +58,8 @@ const Navbar: React.FC = () => {
                 <CartIcon />
               </Link>
               <li className="nav-item">
-                {localStorage.getItem("token") ? (
-                  <Link
-                    className="nav-link"
-                    to="/"
-                    onClick={() => dispatch(logout())}
-                  >
+                {localStorage.getItem('token') ? (
+                  <Link className="nav-link" to="/" onClick={() => dispatch(logout())}>
                     Logout
                   </Link>
                 ) : (
