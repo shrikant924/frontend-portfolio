@@ -4,9 +4,13 @@ import Home from './Home';
 import CartIcon from './CartIcon';
 import { useDispatch } from 'react-redux';
 import { logout } from '../features/auth/authSlice';
+import { useAppSelector } from '../app/hook';
+import { productApi } from '../features/product/productApi';
 
 const Navbar: React.FC = () => {
   const dispatch = useDispatch();
+  const token = useAppSelector((state) => state.auth.token);
+
   return (
     <>
       <nav className="nav-container navbar navbar-expand-lg navbar-light ">
@@ -38,9 +42,9 @@ const Navbar: React.FC = () => {
                 </a>
               </li>
               <li className="nav-item">
-                <a className="nav-link" href="#">
+                <Link className="nav-link" to={'/cart'}>
                   Cart
-                </a>
+                </Link>
               </li>
 
               <li className="nav-item">
@@ -58,8 +62,15 @@ const Navbar: React.FC = () => {
                 <CartIcon />
               </Link>
               <li className="nav-item">
-                {localStorage.getItem('token') ? (
-                  <Link className="nav-link" to="/" onClick={() => dispatch(logout())}>
+                {token ? (
+                  <Link
+                    className="nav-link"
+                    to="/"
+                    onClick={() => {
+                      dispatch(logout());
+                      dispatch(productApi.util.resetApiState());
+                    }}
+                  >
                     Logout
                   </Link>
                 ) : (
@@ -87,5 +98,4 @@ const Navbar: React.FC = () => {
     </>
   );
 };
-
 export default Navbar;

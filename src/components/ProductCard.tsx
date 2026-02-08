@@ -4,24 +4,20 @@ import {
   useDeleteProductByIdMutation,
   useGetProductImageQuery,
 } from '../features/product/productApi';
-import { useAppDispatch, useAppSelector } from '../app/hook';
+import { useAppDispatch } from '../app/hook';
 import { addToCart } from '../features/product/productSlice';
 import './css/AddProductForm.css';
 import { useState } from 'react';
+import { increaseCount } from '../features/cart/cartSlice';
 
 export const ProductCard = ({ product }: any) => {
   const [deleteProductById] = useDeleteProductByIdMutation();
   const [addProductToCart] = useAddProductToCartByIdAndQtyMutation();
-  const [productPurchaseQty, setProductPurchaseQty] = useState(0);
+  const [productPurchaseQty, setProductPurchaseQty] = useState(1);
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
   const { data: imageUrl, isLoading } = useGetProductImageQuery(product.id);
-
-  // FIX: get qty for THIS product only
-  const purchaseQty = useAppSelector(
-    (state) => state.productCart.items.find((item) => item.productId === product.id)?.qty || 0,
-  );
 
   const handleDelete = async () => {
     try {
@@ -34,7 +30,7 @@ export const ProductCard = ({ product }: any) => {
 
   const addToCartProduct = async () => {
     try {
-      const qty = purchaseQty || 1;
+      const qty = productPurchaseQty || 1;
 
       const response = await addProductToCart({
         id: product.id,
@@ -60,6 +56,7 @@ export const ProductCard = ({ product }: any) => {
 
   const handleCart = () => {
     addToCartProduct();
+    dispatch(increaseCount());
   };
 
   const handleEdit = () => {
@@ -115,7 +112,11 @@ export const ProductCard = ({ product }: any) => {
       </div>
 
       <div>
-        <button className="btn btn-outline-danger" onClick={handleCart}>
+        <button
+          className="btn btn-outline-danger"
+          disabled={productPurchaseQty < 1}
+          onClick={handleCart}
+        >
           Add to cart
         </button>
       </div>

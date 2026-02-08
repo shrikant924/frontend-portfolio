@@ -37,7 +37,6 @@ export const AddProductForm = () => {
     stock: '',
   });
 
-  // ✅ Populate form in edit mode
   useEffect(() => {
     if (product) {
       setFormState({

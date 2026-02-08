@@ -25,6 +25,7 @@ export const productApi = baseApi.injectEndpoints({
         url: `product/addToCart/${id}/${qty}`,
         method: 'POST',
       }),
+      invalidatesTags: ['product'],
     }),
 
     updateProductById: builder.mutation<void, { id: string | undefined; formData: FormData }>({
@@ -34,6 +35,7 @@ export const productApi = baseApi.injectEndpoints({
         body: formData,
         responseHandler: 'text',
       }),
+      invalidatesTags: ['product'],
     }),
 
     addProduct: builder.mutation<void, FormData>({
