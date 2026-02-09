@@ -1,87 +1,113 @@
 import { useState } from 'react';
-import './css/Login.css';
 import { Link, useNavigate } from 'react-router-dom';
 import { useLoginMutation } from '../features/auth/authApi';
 import { useDispatch } from 'react-redux';
 import { setCredentials } from '../features/auth/authSlice';
 
 interface LoginForm {
-    username: string,
-    password: string
+  username: string;
+  password: string;
 }
 
 const Login = () => {
+  const [loginApi] = useLoginMutation();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-    const [loginApi] = useLoginMutation()
-    const navigate = useNavigate();
-    const dispatch = useDispatch();
+  const [inputData, setInputData] = useState<LoginForm>({
+    username: '',
+    password: '',
+  });
 
-    const [inputData, setInputData] = useState<LoginForm>(
-        {
-            username: "",
-            password: ""
-        }
-    );
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target;
+    setInputData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
 
-        setInputData(prevData => ({
-            ...prevData,
-            [name]: value
-        }));
-    };
+  const doLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
 
-    const doLogin = async (e: React.FormEvent) => {
-        e.preventDefault();
-        try {
-            const response = await loginApi(inputData).unwrap();
-            dispatch(setCredentials(response));
-            alert("Logged in successfully");
-            navigate("/");
+    try {
+      const response = await loginApi(inputData).unwrap();
 
-        } catch (error: any) {
-            alert(error.response?.data || "Login failed")
-        }
+      dispatch(setCredentials(response));
 
+      alert('Logged in successfully');
+
+      navigate('/');
+    } catch (error: any) {
+      alert(error?.data || 'Login failed');
     }
+  };
 
-    // console.log(inputData);
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
+      {/* Card */}
+      <div className="w-full max-w-md bg-white shadow-lg rounded-lg p-8">
+        {/* Title */}
+        <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">Login</h2>
 
-    return (
-        <>
-            <div className='login-page'>
-                <div className="wrapper">
-                    <div className="from-wrapper sign-in">
-                        <form onSubmit={doLogin}>
-                            <h2>Login</h2>
-                            <div className="input-group">
-                                <input type="text" onInput={handleChange} name='username' value={inputData.username} required />
-                                <label htmlFor="">Username</label>
-                            </div>
+        {/* Form */}
+        <form onSubmit={doLogin} className="space-y-5">
+          {/* Username */}
+          <div>
+            <label className="block text-gray-600 mb-1 text-sm font-medium">Username</label>
+            <input
+              type="text"
+              name="username"
+              value={inputData.username}
+              onChange={handleChange}
+              required
+              className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Enter username"
+            />
+          </div>
 
-                            <div className="input-group">
-                                <input type="password" onInput={handleChange} name='password' value={inputData.password} required />
-                                <label htmlFor="">Password</label>
-                            </div>
+          {/* Password */}
+          <div>
+            <label className="block text-gray-600 mb-1 text-sm font-medium">Password</label>
+            <input
+              type="password"
+              name="password"
+              value={inputData.password}
+              onChange={handleChange}
+              required
+              className="w-full border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-blue-500"
+              placeholder="Enter password"
+            />
+          </div>
 
-                            <div className="remember">
-                                <label htmlFor="">
-                                    <input type="checkbox" name="" id="" />     Remember me
-                                </label>
-                            </div>
+          {/* Remember me */}
+          <div className="flex items-center justify-between text-sm">
+            <label className="flex items-center gap-2 text-gray-600">
+              <input type="checkbox" className="accent-blue-500" />
+              Remember me
+            </label>
+          </div>
 
-                            <button type="submit">Log in</button>
+          {/* Button */}
+          <button
+            type="submit"
+            className="w-full bg-blue-600 text-white py-2 rounded font-semibold hover:bg-blue-700 transition"
+          >
+            Log in
+          </button>
 
-                            <div className="signUp-link">
-                                <p>Don't have an acoount? <Link to={'/register'} className='signUpBtn-link'>Sign Up</Link> </p>
-                            </div>
+          {/* Signup Link */}
+          <div className="text-center text-sm text-gray-600">
+            Don’t have an account?{' '}
+            <Link to="/register" className="text-blue-600 hover:text-blue-800 font-medium">
+              Sign Up
+            </Link>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+};
 
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </>
-    )
-}
 export default Login;

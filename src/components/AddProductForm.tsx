@@ -13,13 +13,11 @@ export const AddProductForm = () => {
 
   const isEdit = Boolean(id);
 
-  // Fetch single product only in edit mode
   const { data: product, isLoading } = useFetchProductByIdQuery(Number(id), {
     skip: !isEdit,
   });
 
   const [addProduct, { isLoading: isAdding }] = useAddProductMutation();
-
   const [updateProduct, { isLoading: isUpdating }] = useUpdateProductByIdMutation();
 
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -54,9 +52,7 @@ export const AddProductForm = () => {
     }
   }, [product]);
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
-  ) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
 
     setFormState((prev) => ({
@@ -98,52 +94,107 @@ export const AddProductForm = () => {
       }
 
       if (isEdit) {
-        await updateProduct({
-          id: id,
-          formData,
-        }).unwrap();
-
+        await updateProduct({ id, formData }).unwrap();
         alert('Product updated');
       } else {
         await addProduct(formData).unwrap();
-
         alert('Product added');
       }
 
       navigate('/');
-    } catch (error) {
+    } catch {
       alert('Operation failed');
     }
   };
 
   if (isEdit && isLoading) {
-    return <h2>Loading...</h2>;
+    return (
+      <div className="flex justify-center items-center h-64 text-xl font-semibold">Loading...</div>
+    );
   }
 
   return (
-    <div>
-      <h2>{isEdit ? 'Edit Product' : 'Add Product'}</h2>
+    <div className="min-h-screen bg-gray-100 flex justify-center items-center px-4 py-8">
+      <div className="w-full max-w-2xl bg-white shadow-lg rounded-lg p-8">
+        {/* Title */}
+        <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">
+          {isEdit ? 'Edit Product' : 'Add Product'}
+        </h2>
 
-      <input name="brand" value={formState.brand} onChange={handleChange} placeholder="Brand" />
+        {/* Form */}
+        <div className="space-y-4">
+          {/* Brand */}
+          <input
+            name="brand"
+            value={formState.brand}
+            onChange={handleChange}
+            placeholder="Brand"
+            className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
 
-      <input name="name" value={formState.name} onChange={handleChange} placeholder="Name" />
+          {/* Name */}
+          <input
+            name="name"
+            value={formState.name}
+            onChange={handleChange}
+            placeholder="Product Name"
+            className="w-full border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-blue-500"
+          />
 
-      <input name="price" value={formState.price} onChange={handleChange} placeholder="Price" />
+          {/* Price */}
+          <input
+            name="price"
+            value={formState.price}
+            onChange={handleChange}
+            placeholder="Price"
+            className="w-full border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-blue-500"
+          />
 
-      <input name="stock" value={formState.stock} onChange={handleChange} placeholder="stock" />
+          {/* Original Price */}
+          <input
+            name="originalPrice"
+            value={formState.originalPrice}
+            onChange={handleChange}
+            placeholder="Original Price"
+            className="w-full border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-blue-500"
+          />
 
-      <input
-        name="description"
-        value={formState.description}
-        onChange={handleChange}
-        placeholder="description"
-      />
+          {/* Stock */}
+          <input
+            name="stock"
+            value={formState.stock}
+            onChange={handleChange}
+            placeholder="Stock"
+            className="w-full border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-blue-500"
+          />
 
-      <input type="file" onChange={handleFileChange} />
+          {/* Description */}
+          <textarea
+            name="description"
+            value={formState.description}
+            onChange={handleChange}
+            placeholder="Description"
+            rows={3}
+            className="w-full border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-blue-500"
+          />
 
-      <button onClick={handleSubmit} disabled={isAdding || isUpdating}>
-        {isEdit ? 'Update' : 'Add'}
-      </button>
+          {/* File Upload */}
+          <input
+            type="file"
+            onChange={handleFileChange}
+            className="w-full border border-gray-300 rounded px-3 py-2 bg-white"
+          />
+
+          {/* Button */}
+          <button
+            onClick={handleSubmit}
+            disabled={isAdding || isUpdating}
+            className="w-full bg-blue-600 text-white py-2 rounded font-semibold hover:bg-blue-700 transition disabled:bg-gray-400"
+          >
+            {isAdding || isUpdating ? 'Processing...' : isEdit ? 'Update Product' : 'Add Product'}
+          </button>
+        </div>
+      </div>
     </div>
   );
 };

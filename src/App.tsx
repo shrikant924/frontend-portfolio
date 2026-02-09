@@ -4,6 +4,7 @@ import Login from './pages/Login';
 import Navbar from './components/Navbar';
 import { AddProductForm } from './components/AddProductForm';
 import { Cart } from './components/Cart';
+import Contact from './pages/Contact';
 
 const App: React.FC = () => {
   return (
@@ -14,6 +15,7 @@ const App: React.FC = () => {
       <Route path="/addProduct" element={<AddProductForm />} />
       <Route path="/editProduct/:id" element={<AddProductForm />} />
       <Route path="/cart" element={<Cart />}></Route>
+      <Route path="/contact_us" element={<Contact />}></Route>
       {/* <Route path='/edit' element={<EditUserFrom />} />
       <Route path='/student' element={<Student/>}/>
       <Route path='/test' element={<Test />} /> */}

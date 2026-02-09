@@ -1,5 +1,4 @@
 import { FaShoppingCart } from 'react-icons/fa';
-import './css/CartIcon.css';
 import { useAppSelector } from '../app/hook';
 
 const CartIcon = () => {

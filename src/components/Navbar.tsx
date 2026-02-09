@@ -1,5 +1,4 @@
 import { Link } from 'react-router-dom';
-import './css/Navbar.css';
 import Home from './Home';
 import CartIcon from './CartIcon';
 import { useDispatch } from 'react-redux';
@@ -13,89 +12,98 @@ const Navbar: React.FC = () => {
 
   return (
     <>
-      <nav className="nav-container navbar navbar-expand-lg navbar-light ">
-        <div className="container-fluid">
-          <Link className="navbar-brand" to={'/'}>
+      <nav className="w-full bg-white shadow-md border-b">
+        <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+          {/* Logo */}
+          <Link to="/" className="text-2xl font-bold text-blue-600 hover:text-blue-700">
             ShopNow
           </Link>
-          <button
-            className="navbar-toggler"
-            type="button"
-            data-bs-toggle="collapse"
-            data-bs-target="#navbarTogglerDemo02"
-            aria-controls="navbarTogglerDemo02"
-            aria-expanded="false"
-            aria-label="Toggle navigation"
-          >
-            <span className="navbar-toggler-icon"></span>
-          </button>
-          <div className="collapse navbar-collapse" id="navbarTogglerDemo02">
-            <ul className="navbar-nav me-auto mb-2 mb-lg-0">
-              <li className="nav-item">
-                <a className="nav-link active" aria-current="page" href="#">
+
+          {/* Menu */}
+          <div className="flex items-center gap-6">
+            <ul className="flex items-center gap-6 text-gray-700 font-medium">
+              <li>
+                <Link to="/" className="hover:text-blue-600 transition">
                   Home
-                </a>
+                </Link>
               </li>
-              <li className="nav-item">
-                <a className="nav-link" href="#">
+
+              <li>
+                <Link to="/categories" className="hover:text-blue-600 transition">
                   Categories
-                </a>
+                </Link>
               </li>
-              <li className="nav-item">
-                <Link className="nav-link" to={'/cart'}>
+
+              <li>
+                <Link to="/cart" className="hover:text-blue-600 transition">
                   Cart
                 </Link>
               </li>
 
-              <li className="nav-item">
-                <Link className="nav-link" to={'/addProduct'}>
+              <li>
+                <Link to="/addProduct" className="hover:text-blue-600 transition">
                   Add Product
                 </Link>
               </li>
 
-              <li className="nav-item">
-                <a className="nav-link" href="#">
-                  Contact US
-                </a>
+              <li>
+                <Link to="/contact_us" className="hover:text-blue-600 transition">
+                  Contact Us
+                </Link>
               </li>
-              <Link to="/cart" className="nav-link position-relative">
-                <CartIcon />
-              </Link>
-              <li className="nav-item">
+
+              {/* Cart Icon */}
+              <li>
+                <Link to="/cart" className="hover:text-blue-600">
+                  <CartIcon />
+                </Link>
+              </li>
+
+              {/* Auth */}
+              <li>
                 {token ? (
-                  <Link
-                    className="nav-link"
-                    to="/"
+                  <button
                     onClick={() => {
                       dispatch(logout());
                       dispatch(productApi.util.resetApiState());
                     }}
+                    className="bg-red-500 text-white px-4 py-1 rounded hover:bg-red-600 transition"
                   >
                     Logout
-                  </Link>
+                  </button>
                 ) : (
-                  <Link className="nav-link" to="/login">
+                  <Link
+                    to="/login"
+                    className="bg-blue-500 text-white px-4 py-1 rounded hover:bg-blue-600 transition"
+                  >
                     Login
                   </Link>
                 )}
               </li>
             </ul>
-            <form className="d-flex">
+
+            {/* Search */}
+            <form className="flex items-center gap-2">
               <input
-                className="form-control me-2"
                 type="search"
-                placeholder="Search"
-                aria-label="Search"
+                placeholder="Search..."
+                className="border border-gray-300 rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-400"
               />
-              <button className="btn btn-outline-success" type="submit">
+
+              <button
+                type="submit"
+                className="bg-blue-500 text-white px-4 py-1 rounded hover:bg-blue-600 transition"
+              >
                 Search
               </button>
             </form>
           </div>
         </div>
       </nav>
+
       <Home />
     </>
   );
 };
+
 export default Navbar;
