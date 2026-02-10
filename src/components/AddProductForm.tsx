@@ -138,7 +138,7 @@ export const AddProductForm = () => {
             value={formState.name}
             onChange={handleChange}
             placeholder="Product Name"
-            className="w-full border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-blue-500"
+            className="w-full border border-gray-300 rounded px-3 py-2  focus:outline-none  focus:ring-2 focus:ring-blue-500"
           />
 
           {/* Price */}
@@ -147,7 +147,7 @@ export const AddProductForm = () => {
             value={formState.price}
             onChange={handleChange}
             placeholder="Price"
-            className="w-full border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-blue-500"
+            className="w-full border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
           />
 
           {/* Original Price */}
@@ -156,7 +156,7 @@ export const AddProductForm = () => {
             value={formState.originalPrice}
             onChange={handleChange}
             placeholder="Original Price"
-            className="w-full border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-blue-500"
+            className="w-full border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
           />
 
           {/* Stock */}
@@ -165,7 +165,7 @@ export const AddProductForm = () => {
             value={formState.stock}
             onChange={handleChange}
             placeholder="Stock"
-            className="w-full border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-blue-500"
+            className="w-full border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
           />
 
           {/* Description */}
@@ -175,21 +175,21 @@ export const AddProductForm = () => {
             onChange={handleChange}
             placeholder="Description"
             rows={3}
-            className="w-full border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-blue-500"
+            className="w-full border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
           />
 
           {/* File Upload */}
           <input
             type="file"
             onChange={handleFileChange}
-            className="w-full border border-gray-300 rounded px-3 py-2 bg-white"
+            className="w-full border border-gray-300 rounded px-3 py-2 bg-white focus:outline-none"
           />
 
           {/* Button */}
           <button
             onClick={handleSubmit}
             disabled={isAdding || isUpdating}
-            className="w-full bg-blue-600 text-white py-2 rounded font-semibold hover:bg-blue-700 transition disabled:bg-gray-400"
+            className="w-full bg-blue-600 text-white py-2 rounded font-semibold hover:bg-blue-700 transition disabled:bg-gray-400 focus:outline-none"
           >
             {isAdding || isUpdating ? 'Processing...' : isEdit ? 'Update Product' : 'Add Product'}
           </button>
