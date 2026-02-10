@@ -6,11 +6,13 @@ import {
   useUpdateProductByIdMutation,
   useFetchProductByIdQuery,
 } from '../features/product/productApi';
+import { useAppDispatch } from '../app/hook';
+import { showPopUp } from '../features/popup/popUpSlice';
 
 export const AddProductForm = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-
+  const dispatch = useAppDispatch();
   const isEdit = Boolean(id);
 
   const { data: product, isLoading } = useFetchProductByIdQuery(Number(id), {
@@ -95,15 +97,30 @@ export const AddProductForm = () => {
 
       if (isEdit) {
         await updateProduct({ id, formData }).unwrap();
-        alert('Product updated');
+        dispatch(
+          showPopUp({
+            message: 'Product updated',
+            type: 'info',
+          }),
+        );
       } else {
         await addProduct(formData).unwrap();
-        alert('Product added');
+        dispatch(
+          showPopUp({
+            message: 'Product added',
+            type: 'info',
+          }),
+        );
       }
 
       navigate('/');
     } catch {
-      alert('Operation failed');
+      dispatch(
+        showPopUp({
+          message: 'Operation failed !',
+          type: 'error',
+        }),
+      );
     }
   };
 

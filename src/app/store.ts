@@ -3,6 +3,7 @@ import authReducer from '../features/auth/authSlice';
 import { baseApi } from '../services/baseApi';
 import cartReducer from '../features/cart/cartSlice';
 import productCartReducer from '../features/product/productSlice';
+import popUpReducer from '../features/popup/popUpSlice';
 
 export const store = configureStore({
   reducer: {
@@ -10,6 +11,7 @@ export const store = configureStore({
     [baseApi.reducerPath]: baseApi.reducer,
     cart: cartReducer,
     productCart: productCartReducer,
+    popUp: popUpReducer,
   },
   middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(baseApi.middleware),
 });

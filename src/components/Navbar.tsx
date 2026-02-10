@@ -1,15 +1,18 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Home from './Home';
 import CartIcon from './CartIcon';
 import { useDispatch } from 'react-redux';
 import { logout } from '../features/auth/authSlice';
-import { useAppSelector } from '../app/hook';
+import { useAppDispatch, useAppSelector } from '../app/hook';
 import { productApi } from '../features/product/productApi';
+import { Dropdown } from './Dropdown';
+import { showPopUp } from '../features/popup/popUpSlice';
+import { Popup } from './Popup';
 
 const Navbar: React.FC = () => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const token = useAppSelector((state) => state.auth.token);
-
+  const navigate = useNavigate();
   return (
     <>
       <nav className="w-full bg-white shadow-md border-b">
@@ -29,9 +32,7 @@ const Navbar: React.FC = () => {
               </li>
 
               <li>
-                <Link to="/categories" className="hover:text-blue-600 transition">
-                  Categories
-                </Link>
+                <Dropdown />
               </li>
 
               <li>
@@ -66,6 +67,13 @@ const Navbar: React.FC = () => {
                     onClick={() => {
                       dispatch(logout());
                       dispatch(productApi.util.resetApiState());
+                      dispatch(
+                        showPopUp({
+                          message: 'Logged out successfully...',
+                          type: 'success',
+                        }),
+                      );
+                      navigate('/');
                     }}
                     className="bg-red-500 text-white px-4 py-1 rounded hover:bg-red-600 transition"
                   >
@@ -100,7 +108,6 @@ const Navbar: React.FC = () => {
           </div>
         </div>
       </nav>
-
       <Home />
     </>
   );

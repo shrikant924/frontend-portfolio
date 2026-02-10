@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useLoginMutation } from '../features/auth/authApi';
-import { useDispatch } from 'react-redux';
 import { setCredentials } from '../features/auth/authSlice';
+import { useAppDispatch } from '../app/hook';
+import { showPopUp } from '../features/popup/popUpSlice';
 
 interface LoginForm {
   username: string;
@@ -12,7 +13,7 @@ interface LoginForm {
 const Login = () => {
   const [loginApi] = useLoginMutation();
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const [inputData, setInputData] = useState<LoginForm>({
     username: '',
@@ -35,12 +36,21 @@ const Login = () => {
       const response = await loginApi(inputData).unwrap();
 
       dispatch(setCredentials(response));
-
-      alert('Logged in successfully');
+      dispatch(
+        showPopUp({
+          message: 'Login Successful',
+          type: 'success',
+        }),
+      );
 
       navigate('/');
     } catch (error: any) {
-      alert(error?.data || 'Login failed');
+      dispatch(
+        showPopUp({
+          message: error?.data || 'Login failed',
+          type: 'error',
+        }),
+      );
     }
   };
 

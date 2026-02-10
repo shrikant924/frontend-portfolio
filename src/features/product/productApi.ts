@@ -56,6 +56,7 @@ export const productApi = baseApi.injectEndpoints({
           return URL.createObjectURL(blob);
         },
       }),
+      providesTags: ['product'],
     }),
   }),
 });

@@ -8,6 +8,7 @@ import { useAppDispatch } from '../app/hook';
 import { addToCart } from '../features/product/productSlice';
 import { useState } from 'react';
 import { increaseCount } from '../features/cart/cartSlice';
+import { showPopUp } from '../features/popup/popUpSlice';
 
 export const ProductCard = ({ product }: any) => {
   const [deleteProductById] = useDeleteProductByIdMutation();
@@ -23,7 +24,7 @@ export const ProductCard = ({ product }: any) => {
   const handleDelete = async () => {
     try {
       await deleteProductById(product.id).unwrap();
-      alert('Product deleted successfully');
+      dispatch(showPopUp({ message: 'Product deleted successfully', type: 'info' }));
     } catch (error) {
       console.error(error);
     }
@@ -95,7 +96,7 @@ export const ProductCard = ({ product }: any) => {
       <h3 className="text-lg font-semibold text-gray-800">{product.brand}</h3>
 
       {/* Description */}
-      <p className="text-sm text-gray-500 line-clamp-2 mb-2">{product.description}</p>
+      <p className="text-sm text-gray-500 h-5 line-clamp-2 mb-2">{product.description}</p>
 
       {/* Price */}
       <div className="text-lg font-bold text-blue-600 mb-1">₹{product.price}</div>

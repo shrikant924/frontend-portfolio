@@ -21,8 +21,8 @@ const Home = () => {
   return (
     <div className="min-h-screen bg-gray-100 px-4 py-8">
       {/* Title */}
-      <h1 className="text-3xl font-bold text-center mb-8 text-gray-800">Our Products</h1>
 
+      <h1 className="text-3xl font-bold text-center mb-8 text-gray-800">Our Products</h1>
       {/* Product Grid */}
       <div
         className="max-w-7xl mx-auto grid gap-6 
@@ -35,7 +35,6 @@ const Home = () => {
           <ProductCard key={product.id} product={product} />
         ))}
       </div>
-
       {/* Empty state */}
       {products?.length === 0 && (
         <div className="text-center text-gray-500 text-lg mt-10">No products available</div>
