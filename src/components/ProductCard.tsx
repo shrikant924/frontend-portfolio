@@ -63,12 +63,12 @@ export const ProductCard = ({ product }: any) => {
   };
 
   return (
-    <div className="bg-white shadow-md rounded-lg p-4 hover:shadow-xl transition duration-300 flex flex-col">
+    <div className="bg-white shadow-md rounded-lg p-4 hover:shadow-xl transition duration-300 flex flex-col ">
       {/* Edit/Delete */}
       <div className="flex justify-between mb-2">
         <button
           onClick={handleEdit}
-          className="text-blue-500 hover:text-blue-700 text-xl"
+          className="text-blue-500 hover:text-blue-700 text-xl z"
           title="Edit"
         >
           ✏️
@@ -76,7 +76,7 @@ export const ProductCard = ({ product }: any) => {
 
         <button
           onClick={handleDelete}
-          className="text-red-500 hover:text-red-700 text-xl"
+          className="text-red-500 hover:text-red-700 text-xl z-10"
           title="Delete"
         >
           🗑️
@@ -88,7 +88,11 @@ export const ProductCard = ({ product }: any) => {
         {isLoading ? (
           <span className="text-gray-400 animate-pulse">Loading...</span>
         ) : (
-          <img src={imageUrl} alt={product.name} className="max-h-40 object-contain" />
+          <img
+            src={imageUrl}
+            alt={product.name}
+            className="max-h-40 object-contain hover:scale-125"
+          />
         )}
       </div>
 

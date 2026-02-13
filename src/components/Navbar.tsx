@@ -1,13 +1,11 @@
 import { Link, useNavigate } from 'react-router-dom';
 import Home from './Home';
 import CartIcon from './CartIcon';
-import { useDispatch } from 'react-redux';
 import { logout } from '../features/auth/authSlice';
 import { useAppDispatch, useAppSelector } from '../app/hook';
 import { productApi } from '../features/product/productApi';
 import { Dropdown } from './Dropdown';
 import { showPopUp } from '../features/popup/popUpSlice';
-import { Popup } from './Popup';
 
 const Navbar: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -15,7 +13,7 @@ const Navbar: React.FC = () => {
   const navigate = useNavigate();
   return (
     <>
-      <nav className="w-full bg-white shadow-md border-b">
+      <nav className="w-full bg-white shadow-md border-b fixed">
         <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
           {/* Logo */}
           <Link to="/" className="text-2xl font-bold text-blue-600 hover:text-blue-700">

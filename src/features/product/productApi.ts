@@ -1,10 +1,17 @@
 import { baseApi } from '../../services/baseApi';
 import type { Product } from './ProductType';
 
+interface PaginatedResponse {
+  content: Product[];
+  page: number;
+  size: number;
+  totalPages: number;
+}
+
 export const productApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    fetchProducts: builder.query<Product[], void>({
-      query: () => 'product/getProducts',
+    fetchProducts: builder.query<PaginatedResponse, number>({
+      query: (page = 0) => `product/getProducts?page=${page}&size=8`,
       providesTags: ['product'],
     }),
 
