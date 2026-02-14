@@ -1,9 +1,14 @@
+import { useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../app/hook';
+
 import { removeFromCart } from '../features/product/productSlice';
 
 export const Cart = () => {
   const items = useAppSelector((state) => state.productCart.items);
+  const userId = useAppSelector((state) => state.auth.userId);
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+
   if (items.length === 0) {
     return (
       <div className="min-h-screen flex justify-center items-center text-gray-500 text-xl font-semibold">
@@ -50,7 +55,18 @@ export const Cart = () => {
                   Remove
                 </button>
 
-                <button className="mx-1 my-2 animate-none rounded border-2 border-solid border-black bg-green-600 pt-1 pr-3 pb-1 pl-3 font-bold text-white shadow-indigo-950 hover:shadow-2xs">
+                <button
+                  className="mx-1 my-2 animate-none rounded border-2 border-solid border-black bg-green-600 pt-1 pr-3 pb-1 pl-3 font-bold text-white shadow-indigo-950 hover:shadow-2xs"
+                  onClick={async () => {
+                    navigate('/shipping_details', {
+                      state: {
+                        userId: userId,
+                        productId: item.productId,
+                        productQty: item.qty,
+                      },
+                    });
+                  }}
+                >
                   Checkout
                 </button>
               </div>
@@ -61,5 +77,3 @@ export const Cart = () => {
     </div>
   );
 };
-
-export default Cart;

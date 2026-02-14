@@ -13,7 +13,7 @@ const Navbar: React.FC = () => {
   const navigate = useNavigate();
   return (
     <>
-      <nav className="w-full bg-white shadow-md border-b fixed">
+      <nav className="w-full bg-white shadow-md border-b fixed z-50">
         <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
           {/* Logo */}
           <Link to="/" className="text-2xl font-bold text-blue-600 hover:text-blue-700">

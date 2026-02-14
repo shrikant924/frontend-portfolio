@@ -13,6 +13,9 @@ export const store = configureStore({
     productCart: productCartReducer,
     popUp: popUpReducer,
   },
+
+  devTools: import.meta.env.DEV,
+
   middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(baseApi.middleware),
 });
 

@@ -4,7 +4,7 @@ import {
   useDeleteProductByIdMutation,
   useGetProductImageQuery,
 } from '../features/product/productApi';
-import { useAppDispatch } from '../app/hook';
+import { useAppDispatch, useAppSelector } from '../app/hook';
 import { addToCart } from '../features/product/productSlice';
 import { useState } from 'react';
 import { increaseCount } from '../features/cart/cartSlice';
@@ -12,8 +12,7 @@ import { showPopUp } from '../features/popup/popUpSlice';
 
 export const ProductCard = ({ product }: any) => {
   const [deleteProductById] = useDeleteProductByIdMutation();
-  const [addProductToCart] = useAddProductToCartByIdAndQtyMutation();
-
+  const userId = useAppSelector((state) => state.auth.userId);
   const [productPurchaseQty, setProductPurchaseQty] = useState(1);
 
   const navigate = useNavigate();
@@ -33,11 +32,6 @@ export const ProductCard = ({ product }: any) => {
   const addToCartProduct = async () => {
     try {
       const qty = productPurchaseQty || 1;
-
-      await addProductToCart({
-        id: product.id,
-        qty,
-      }).unwrap();
 
       dispatch(
         addToCart({
@@ -84,14 +78,14 @@ export const ProductCard = ({ product }: any) => {
       </div>
 
       {/* Image */}
-      <div className="flex justify-center items-center h-40 mb-3">
+      <div className="flex justify-center items-center h-40 w-60 mb-3">
         {isLoading ? (
           <span className="text-gray-400 animate-pulse">Loading...</span>
         ) : (
           <img
             src={imageUrl}
             alt={product.name}
-            className="max-h-40 object-contain hover:scale-125"
+            className="max-h-30 object-contain hover:scale-125 max-w-40 box-border"
           />
         )}
       </div>
@@ -106,9 +100,7 @@ export const ProductCard = ({ product }: any) => {
       <div className="text-lg font-bold text-blue-600 mb-1">₹{product.price}</div>
 
       {/* Stock */}
-      <div className="text-sm text-gray-500 mb-3">
-        Stock: {product.stock > 0 ? product.stock - productPurchaseQty : 0}
-      </div>
+      <div className="text-sm text-gray-500 mb-3">Stock: {product.stock}</div>
 
       {/* Quantity Controls */}
       <div className="flex justify-center items-center gap-3 mb-3">

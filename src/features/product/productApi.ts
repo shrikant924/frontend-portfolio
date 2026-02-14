@@ -8,6 +8,12 @@ interface PaginatedResponse {
   totalPages: number;
 }
 
+interface Cart {
+  userId: number;
+  productId: number;
+  productQty: number;
+}
+
 export const productApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     fetchProducts: builder.query<PaginatedResponse, number>({
@@ -27,10 +33,11 @@ export const productApi = baseApi.injectEndpoints({
       invalidatesTags: ['product'],
     }),
 
-    addProductToCartByIdAndQty: builder.mutation<Product, { id: string; qty: number }>({
-      query: ({ id, qty }) => ({
-        url: `product/addToCart/${id}/${qty}`,
+    addProductToCartByIdAndQty: builder.mutation<Product, Cart>({
+      query: (cart) => ({
+        url: `product/addToCart`,
         method: 'POST',
+        body: cart,
       }),
       invalidatesTags: ['product'],
     }),
@@ -65,6 +72,14 @@ export const productApi = baseApi.injectEndpoints({
       }),
       providesTags: ['product'],
     }),
+    updateProductStock: builder.mutation<void, { productId: number; qty: number }>({
+      query: ({ productId, qty }) => ({
+        url: `product/${productId}/stock`,
+        method: 'PATCH',
+        body: { qty },
+      }),
+      invalidatesTags: ['product'],
+    }),
   }),
 });
 
@@ -75,4 +90,5 @@ export const {
   useAddProductToCartByIdAndQtyMutation,
   useUpdateProductByIdMutation,
   useAddProductMutation,
+  useUpdateProductStockMutation,
 } = productApi;

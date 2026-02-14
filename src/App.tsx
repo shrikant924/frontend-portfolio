@@ -7,6 +7,8 @@ import { Cart } from './components/Cart';
 import Contact from './pages/Contact';
 import { Dropdown } from './components/Dropdown';
 import { Popup } from './components/Popup';
+import { OrderShippingDetails } from './components/OrderShippingDetails';
+import { OrderStatus } from './components/OrderStatus';
 
 const App: React.FC = () => {
   return (
@@ -21,6 +23,8 @@ const App: React.FC = () => {
         <Route path="/cart" element={<Cart />}></Route>
         <Route path="/contact_us" element={<Contact />}></Route>
         <Route path="/categories" element={<Dropdown />} />
+        <Route path="/shipping_details" element={<OrderShippingDetails />} />
+        <Route path="/orderStatus" element={<OrderStatus />} />
       </Routes>
     </>
   );
